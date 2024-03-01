@@ -5,50 +5,54 @@ import {
   Text,
   StyleSheet,
   Pressable,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import Svg, { Circle, Path } from "react-native-svg";
 import { Background } from "./Background";
 import { useState } from "react";
+import { ImageButton } from "./ImageButton";
+
+
+
 
 export const RegistrationScreen = () => {
   const [loginIsFocused, setLoginIsFocused] = useState(false);
   const [emailIsFocused, setEmailIsFocused] = useState(false);
   const [passwordIsFocused, setPasswordIsFocused] = useState(false);
+  const [login, setLogin] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onRegister = () => {
+    if (!login || !email || !password) {
+      return;
+    }
+
+    console.log(`Login: ${login}, Email: ${email}, Password: ${password}`);
+  };
 
   return (
     <Background>
       <View style={styles.contentContainer}>
         <View style={styles.imageContainer}>
           <Image />
-          <View style={styles.imageButton}>
-            <Svg width="25" height="25" viewBox="0 0 25 25">
-              <Circle
-                cx="12.500000"
-                cy="12.500000"
-                r="12.000000"
-                fill="#FFFFFF"
-                stroke="#FF6C00"
-                stroke-opacity="1.000000"
-                stroke-width="1.000000"
-              />
-              <Path
-                d="M13 6L12 6L12 12L6 12L6 13L12 13L12 19L13 19L13 13L19 13L19 12L13 12L13 6Z"
-                clip-rule="evenodd"
-                fill="#FF6C00"
-                fill-opacity="1.000000"
-                fill-rule="evenodd"
-              />
-            </Svg>
-          </View>
+          <ImageButton style={styles.imageButton} />
         </View>
         <Text style={styles.title}>Реєстрація</Text>
-        <View style={styles.inputWrapper}>
+        <KeyboardAvoidingView
+          style={styles.inputWrapper}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          keyboardVerticalOffset={100}
+        >
           <TextInput
             placeholder="Логін"
             style={loginIsFocused ? styles.focusedInput : styles.input}
             onFocus={() => setLoginIsFocused(true)}
             onBlur={() => setLoginIsFocused(false)}
             placeholderTextColor={"rgb(189, 189, 189)"}
+            value={login}
+            onChangeText={setLogin}
           />
           <TextInput
             placeholder="Адреса електронної пошти"
@@ -56,22 +60,29 @@ export const RegistrationScreen = () => {
             onFocus={() => setEmailIsFocused(true)}
             onBlur={() => setEmailIsFocused(false)}
             placeholderTextColor={"rgb(189, 189, 189)"}
+            value={email}
+            onChangeText={setEmail}
           />
           <View style={styles.passwordWrapper}>
             <TextInput
               placeholder="Пароль"
-              secureTextEntry={true}
+              secureTextEntry={!showPassword}
               style={passwordIsFocused ? styles.focusedInput : styles.input}
               onFocus={() => setPasswordIsFocused(true)}
               onBlur={() => setPasswordIsFocused(false)}
               placeholderTextColor={"rgb(189, 189, 189)"}
+              value={password}
+              onChangeText={setPassword}
             />
-            <Pressable style={styles.passwordTextWrapper}>
+            <Pressable
+              style={styles.passwordTextWrapper}
+              onPress={() => setShowPassword(!showPassword)}
+            >
               <Text style={styles.text}>Показати</Text>
             </Pressable>
           </View>
-        </View>
-        <Pressable style={styles.submitButton}>
+        </KeyboardAvoidingView>
+        <Pressable style={styles.submitButton} onPress={onRegister}>
           <Text style={styles.submitButtonText}>Зареєстуватися</Text>
         </Pressable>
         <Text style={styles.text}>Вже є акаунт? Увійти</Text>

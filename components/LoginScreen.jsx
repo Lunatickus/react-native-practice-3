@@ -1,38 +1,67 @@
-import { View, TextInput, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Background } from "./Background";
 import { useState } from "react";
 
 export const LoginScreen = () => {
   const [emailIsFocused, setEmailIsFocused] = useState(false);
   const [passwordIsFocused, setPasswordIsFocused] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onLogin = () => {
+    if (!email || !password) {
+      return;
+    }
+
+    console.log(`Email: ${email}, Password: ${password}`);
+  };
 
   return (
     <Background>
       <View style={styles.contentContainer}>
         <Text style={styles.title}>Увійти</Text>
-        <View style={styles.inputWrapper}>
+        <KeyboardAvoidingView
+          style={styles.inputWrapper}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
           <TextInput
             placeholder="Адреса електронної пошти"
             style={emailIsFocused ? styles.focusedInput : styles.input}
             onFocus={() => setEmailIsFocused(true)}
             onBlur={() => setEmailIsFocused(false)}
             placeholderTextColor={"rgb(189, 189, 189)"}
+            value={email}
+            onChangeText={setEmail}
           />
           <View style={styles.passwordWrapper}>
             <TextInput
               placeholder="Пароль"
-              secureTextEntry={true}
+              secureTextEntry={!showPassword}
               style={passwordIsFocused ? styles.focusedInput : styles.input}
               onFocus={() => setPasswordIsFocused(true)}
               onBlur={() => setPasswordIsFocused(false)}
               placeholderTextColor={"rgb(189, 189, 189)"}
+              value={password}
+              onChangeText={setPassword}
             />
-            <Pressable style={styles.passwordTextWrapper}>
+            <Pressable
+              style={styles.passwordTextWrapper}
+              onPress={() => setShowPassword(!showPassword)}
+            >
               <Text style={styles.text}>Показати</Text>
             </Pressable>
           </View>
-        </View>
-        <Pressable style={styles.submitButton}>
+        </KeyboardAvoidingView>
+        <Pressable style={styles.submitButton} onPress={onLogin}>
           <Text style={styles.submitButtonText}>Увійти</Text>
         </Pressable>
         <Text style={styles.text}>Немає акаунту? Зареєструватися</Text>
